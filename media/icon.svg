@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 108 108">
+  <!-- SmartBudget logo: a soft lavender wallet (card, body, clasp). Same shapes as the Android launcher icon. -->
+  <rect width="108" height="108" rx="24" fill="#F3F1FA"/>
+  <rect x="35" y="34.5" width="33" height="8" rx="4" fill="#E2DEF8"/>
+  <rect x="28" y="39.5" width="48" height="34" rx="9" fill="#CFC9F2"/>
+  <rect x="61" y="49.5" width="19" height="13" rx="5" fill="#B3ABEA"/>
+  <circle cx="67" cy="56" r="2.5" fill="#F3F1FA"/>
+</svg>

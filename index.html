@@ -3,27 +3,303 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Smart Budget</title>
-<link rel="stylesheet" href="style.css">
+<title>Smart Budget – Know what you can spend today</title>
+<meta name="description" content="Smart Budget is a private, offline budgeting app for Android. See what's safe to spend today, follow 50/30/20 or your own plan, and back up to your own Google Drive.">
+<meta property="og:title" content="Smart Budget">
+<meta property="og:description" content="Know what you can spend today. A private, offline budgeting app for Android.">
+<meta property="og:image" content="https://abfactory37.github.io/smart-budget-site/media/intro-poster.jpg">
+<meta name="theme-color" content="#0A0D12">
+<link rel="icon" href="media/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A0D12; --surface: #12161B; --surface-2: #171C23; --line: #232A33;
+    --fg: #E9EDF2; --muted: #9AA4B2; --mint: #3EE0A2; --mint-ink: #00281A;
+    --green-1: #0F3A2B; --green-2: #1B6B50; --lavender: #A9A6FF; --sky: #6CC8FF; --amber: #FFB547;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.6 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  img, video { display: block; max-width: 100%; }
+  a { color: inherit; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+
+  /* Nav */
+  nav { position: sticky; top: 0; z-index: 10; background: rgba(10,13,18,.78); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,.05); }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; text-decoration: none; }
+  .brand img { width: 32px; height: 32px; border-radius: 9px; }
+  .links { display: flex; gap: 28px; align-items: center; font-size: 15px; }
+  .links a { text-decoration: none; color: var(--muted); }
+  .links a:hover { color: var(--fg); }
+  @media (max-width: 640px) { .links .hide-sm { display: none; } }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px; font-weight: 600; font-size: 16px; text-decoration: none; transition: transform .15s, background .15s; }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--mint); color: var(--mint-ink); }
+  .btn-ghost { background: var(--surface-2); color: var(--fg); border: 1px solid var(--line); }
+  .links .btn { padding: 9px 16px; font-size: 14px; color: var(--mint-ink); }
+
+  /* Hero */
+  .hero { position: relative; padding: 72px 0 40px; }
+  .hero::before { content: ""; position: absolute; inset: -200px -20% auto; height: 760px; background: radial-gradient(600px 400px at 70% 30%, rgba(62,224,162,.18), transparent 70%), radial-gradient(500px 360px at 20% 10%, rgba(169,166,255,.10), transparent 70%); pointer-events: none; }
+  .hero .wrap { position: relative; display: grid; grid-template-columns: 1.15fr .85fr; gap: 48px; align-items: center; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: rgba(62,224,162,.1); color: var(--mint); font-size: 13px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+  .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--mint); }
+  h1 { font-size: clamp(40px, 6vw, 68px); line-height: 1.04; letter-spacing: -.03em; margin: 20px 0 18px; font-weight: 800; }
+  h1 em { font-style: normal; color: var(--mint); }
+  .lead { font-size: 19px; color: var(--muted); max-width: 520px; margin: 0 0 32px; }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; }
+  .pills { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 32px; color: var(--muted); font-size: 14px; }
+  .pills span::before { content: "✓"; color: var(--mint); margin-right: 6px; font-weight: 700; }
+  @media (max-width: 860px) { .hero .wrap { grid-template-columns: 1fr; } .hero .phone { margin: 0 auto; } }
+
+  /* Phone frame */
+  .phone { width: 100%; max-width: 300px; border-radius: 40px; padding: 10px; background: linear-gradient(160deg, #2A313B, #11151A); box-shadow: 0 40px 80px -30px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.06); }
+  .phone img { border-radius: 31px; width: 100%; aspect-ratio: 9 / 20; object-fit: cover; object-position: top; background: var(--surface); }
+  .hero .phone { max-width: 330px; transform: rotate(2deg); }
+
+  /* Film */
+  section { padding: 88px 0; }
+  .section-head { text-align: center; max-width: 640px; margin: 0 auto 44px; }
+  h2 { font-size: clamp(30px, 4vw, 44px); line-height: 1.1; letter-spacing: -.02em; margin: 0 0 14px; font-weight: 800; }
+  .section-head p { color: var(--muted); margin: 0; font-size: 18px; }
+  .film { position: relative; border-radius: 24px; overflow: hidden; background: #000; box-shadow: 0 40px 100px -40px rgba(62,224,162,.35), 0 0 0 1px var(--line); aspect-ratio: 16 / 9; }
+  .film video { width: 100%; height: 100%; object-fit: cover; }
+  .film .play { position: absolute; inset: 0; display: grid; place-items: center; background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,.45)); border: 0; cursor: pointer; padding: 0; }
+  .film .play span { width: 88px; height: 88px; border-radius: 50%; background: var(--mint); display: grid; place-items: center; box-shadow: 0 0 0 12px rgba(62,224,162,.18); transition: transform .2s; }
+  .film .play:hover span { transform: scale(1.06); }
+  .film .play svg { width: 30px; height: 30px; margin-left: 5px; fill: var(--mint-ink); }
+  .film .play small { position: absolute; bottom: 20px; left: 24px; color: #fff; font-size: 14px; font-weight: 600; opacity: .9; }
+  .film.playing .play { display: none; }
+
+  /* Features */
+  .feature { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; padding: 48px 0; }
+  .feature + .feature { border-top: 1px solid var(--line); }
+  .feature .phone { margin: 0 auto; max-width: 280px; }
+  .feature.flip .copy { order: 2; }
+  .tag { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 10px; }
+  .feature h3 { font-size: clamp(26px, 3vw, 34px); line-height: 1.15; letter-spacing: -.02em; margin: 0 0 14px; }
+  .feature p { color: var(--muted); margin: 0 0 18px; }
+  .feature ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+  .feature li { padding-left: 28px; position: relative; }
+  .feature li::before { content: ""; position: absolute; left: 0; top: .55em; width: 14px; height: 14px; border-radius: 4px; background: currentColor; opacity: .9; }
+  .feature li { color: var(--fg); }
+  .c-mint { color: var(--mint); } .c-lav { color: var(--lavender); } .c-sky { color: var(--sky); } .c-amber { color: var(--amber); }
+  .c-mint li::before { background: var(--mint); } .c-lav li::before { background: var(--lavender); } .c-sky li::before { background: var(--sky); } .c-amber li::before { background: var(--amber); }
+  .feature ul { color: inherit; }
+  @media (max-width: 860px) { .feature { grid-template-columns: 1fr; gap: 32px; } .feature.flip .copy { order: 0; } }
+
+  /* Gallery */
+  .gallery { display: flex; gap: 20px; overflow-x: auto; padding: 8px 20px 24px; scroll-snap-type: x mandatory; scrollbar-width: thin; }
+  .gallery figure { flex: 0 0 220px; margin: 0; scroll-snap-align: center; }
+  .gallery .phone { border-radius: 30px; padding: 7px; }
+  .gallery .phone img { border-radius: 24px; }
+  .gallery figcaption { text-align: center; color: var(--muted); font-size: 14px; margin-top: 12px; }
+  @media (min-width: 1200px) { .gallery { justify-content: center; } }
+
+  /* Privacy band */
+  .privacy { background: linear-gradient(135deg, var(--green-1), #0C2A20 60%, var(--bg)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .card { background: rgba(10,13,18,.45); border: 1px solid rgba(255,255,255,.08); border-radius: 20px; padding: 26px; }
+  .card .ico { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: rgba(62,224,162,.14); color: var(--mint); margin-bottom: 16px; }
+  .card .ico svg { width: 22px; height: 22px; }
+  .card h4 { margin: 0 0 8px; font-size: 18px; }
+  .card p { margin: 0; color: var(--muted); font-size: 15px; }
+  @media (max-width: 860px) { .grid3 { grid-template-columns: 1fr; } }
+
+  /* Final CTA */
+  .final { text-align: center; }
+  .final .box { background: var(--surface); border: 1px solid var(--line); border-radius: 28px; padding: 56px 24px; }
+  .final img { width: 72px; height: 72px; border-radius: 18px; margin: 0 auto 20px; }
+
+  footer { border-top: 1px solid var(--line); padding: 28px 0; color: var(--muted); font-size: 14px; }
+  footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  footer a { color: var(--muted); text-decoration: none; margin-left: 20px; }
+  footer a:hover { color: var(--fg); }
+</style>
 </head>
 <body>
-<main>
-<h1>Smart Budget</h1>
-<p class="lead">A private budgeting app for Android that tells you, every day, how much you can safely spend.</p>
 
-<ul>
-<li>"Safe to spend today" and a pace bar for the month</li>
-<li>Needs, wants and savings budgets: 50/30/20 by default, or your own plans</li>
-<li>Bank, cash, savings, credit-card and loan accounts, with transfers and net worth</li>
-<li>Recurring bills, cheques, a 13-week cash plan and CSV statement import</li>
-<li>Statistics by category, month, year or any date range</li>
-<li>Optional, encrypted backup to your own Google Drive</li>
-</ul>
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#"><img src="media/icon.svg" alt="">Smart Budget</a>
+    <div class="links">
+      <a class="hide-sm" href="#film">Film</a>
+      <a class="hide-sm" href="#features">Features</a>
+      <a href="privacy.html">Privacy</a>
+      <a class="btn btn-primary" href="#film">Watch the intro</a>
+    </div>
+  </div>
+</nav>
 
-<p>Smart Budget works fully offline. There are no ads, no analytics and no account to create. Your data stays on your
-phone unless you choose to back it up to your own Google Drive.</p>
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">Budgeting app for Android</span>
+      <h1>Know what you can <em>spend today.</em></h1>
+      <p class="lead">Smart Budget turns your income, bills and spending into one simple number each morning, so you can say yes to dinner without worrying about the end of the month.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="#film">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+          Watch the 2-min intro
+        </a>
+        <a class="btn btn-ghost" href="#features">See the features</a>
+      </div>
+      <div class="pills"><span>Works offline</span><span>No ads</span><span>No tracking</span><span>Your data stays yours</span></div>
+    </div>
+    <div class="phone"><img src="media/home_top.webp" alt="Smart Budget home screen showing 550 MAD safe to spend today" width="540" height="1200"></div>
+  </div>
+</header>
 
-<p><a href="privacy.html">Privacy Policy</a> · <a href="mailto:contact@abencherif.com">Contact</a></p>
-</main>
+<section id="film">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>See it in two minutes</h2>
+      <p>A month with Smart Budget, from payday to the last grocery run.</p>
+    </div>
+    <div class="film" id="filmBox">
+      <video id="filmVideo" src="media/smart-budget-intro.mp4" poster="media/intro-poster.jpg" preload="none" playsinline controls></video>
+      <button class="play" id="filmPlay" aria-label="Play the Smart Budget intro film">
+        <span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
+        <small>Smart Budget · 1:52</small>
+      </button>
+    </div>
+  </div>
+</section>
+
+<section id="features" style="padding-top: 24px">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Everything your money needs, nothing it doesn't</h2>
+      <p>Built for real monthly budgets: salary, rent, cash, cards, cheques and the occasional dinner out.</p>
+    </div>
+
+    <div class="feature">
+      <div class="copy c-mint">
+        <div class="tag">Today</div>
+        <h3>One number to check each morning</h3>
+        <p>"Safe to spend today" is what's left this month divided by the days to go. A pace bar shows if you're ahead of the calendar.</p>
+        <ul>
+          <li>Spent today, this month and saved, at a glance</li>
+          <li>"Needs your attention" for due bills and cheques</li>
+          <li>Alerts before you overspend</li>
+        </ul>
+      </div>
+      <div class="phone"><img src="media/home_top.webp" alt="Home screen" loading="lazy" width="540" height="1200"></div>
+    </div>
+
+    <div class="feature flip">
+      <div class="copy c-lav">
+        <div class="tag">Budget</div>
+        <h3>50/30/20, or your own plan</h3>
+        <p>Your income is split into needs, wants and savings. Use the classic 50/30/20 or make your own plans for normal months, holidays or Ramadan, and switch in one tap.</p>
+        <ul>
+          <li>Monthly limits per category, plus an overall limit</li>
+          <li>Daily allowance that adjusts as you spend</li>
+          <li>A salary is never counted twice</li>
+        </ul>
+      </div>
+      <div class="phone"><img src="media/budget.webp" alt="Budget screen with needs and wants" loading="lazy" width="540" height="1200"></div>
+    </div>
+
+    <div class="feature">
+      <div class="copy c-sky">
+        <div class="tag">Accounts</div>
+        <h3>Every account, and your net worth</h3>
+        <p>Bank, cash, savings, credit cards and loans in one place. See what you own minus what you owe.</p>
+        <ul>
+          <li>Transfers and card payoffs never count as spending</li>
+          <li>Fix any balance with "Adjust balance"</li>
+          <li>Import CSV statements from your bank</li>
+        </ul>
+      </div>
+      <div class="phone"><img src="media/accounts.webp" alt="Accounts screen with net worth" loading="lazy" width="540" height="1200"></div>
+    </div>
+
+    <div class="feature flip">
+      <div class="copy c-amber">
+        <div class="tag">Plan ahead</div>
+        <h3>See the next 13 weeks coming</h3>
+        <p>The cash plan adds your recurring bills, salary and pending cheques to today's balance, so you spot the lowest point before it arrives.</p>
+        <ul>
+          <li>Recurring items: weekly, monthly, quarterly, yearly</li>
+          <li>Cheques and LCN, issued and received</li>
+          <li>13-week or 12-month view</li>
+        </ul>
+      </div>
+      <div class="phone"><img src="media/cashplan.webp" alt="Cash plan with 13-week forecast" loading="lazy" width="540" height="1200"></div>
+    </div>
+  </div>
+
+  <div class="gallery" aria-label="More screens">
+    <figure><div class="phone"><img src="media/history.webp" alt="History" loading="lazy" width="540" height="1200"></div><figcaption>History by day, week or month</figcaption></figure>
+    <figure><div class="phone"><img src="media/stats.webp" alt="Statistics" loading="lazy" width="540" height="1200"></div><figcaption>Statistics and 6-month trend</figcaption></figure>
+    <figure><div class="phone"><img src="media/recurring.webp" alt="Recurring items" loading="lazy" width="540" height="1200"></div><figcaption>Recurring bills and salary</figcaption></figure>
+    <figure><div class="phone"><img src="media/cheques.webp" alt="Cheques" loading="lazy" width="540" height="1200"></div><figcaption>Cheques and LCN</figcaption></figure>
+    <figure><div class="phone"><img src="media/backup1.webp" alt="Backup and restore" loading="lazy" width="540" height="1200"></div><figcaption>Encrypted Drive backup</figcaption></figure>
+  </div>
+</section>
+
+<section class="privacy" id="privacy">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Private by design</h2>
+      <p>Your finances are nobody's business. Smart Budget has no server, no ads and no analytics.</p>
+    </div>
+    <div class="grid3">
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg></div>
+        <h4>Stays on your phone</h4>
+        <p>Everything is stored on your device and works without internet. No account to create.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 12 3.5 3.5 0 0 0 6 19z"/></svg></div>
+        <h4>Backup to your own Drive</h4>
+        <p>Optional backup goes to a hidden folder in your Google Drive. The app can't see your other files.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+        <h4>Encrypted if you want</h4>
+        <p>Add a passphrase and your backup is encrypted with AES-256 on your phone before upload.</p>
+      </div>
+    </div>
+    <p style="text-align:center; margin: 32px 0 0"><a href="privacy.html" style="color: var(--mint); font-weight: 600">Read the privacy policy →</a></p>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <div class="box">
+      <img src="media/icon.svg" alt="">
+      <h2>Spend with confidence</h2>
+      <p class="lead" style="margin: 0 auto 28px">Smart Budget is coming to Android. Questions or want to try it early? Get in touch.</p>
+      <div class="cta" style="justify-content:center">
+        <a class="btn btn-primary" href="mailto:contact@abencherif.com?subject=Smart%20Budget">Contact us</a>
+        <a class="btn btn-ghost" href="#film">Watch the intro</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Smart Budget</span>
+    <span><a href="privacy.html">Privacy Policy</a><a href="mailto:contact@abencherif.com">Contact</a></span>
+  </div>
+</footer>
+
+<script>
+  const box = document.getElementById('filmBox');
+  const video = document.getElementById('filmVideo');
+  document.getElementById('filmPlay').addEventListener('click', () => {
+    box.classList.add('playing');
+    video.play();
+  });
+  video.addEventListener('play', () => box.classList.add('playing'));
+</script>
 </body>
 </html>
