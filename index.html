@@ -82,7 +82,7 @@
   .feature .phone { margin: 0 auto; max-width: 280px; }
   .feature.flip .copy { order: 2; }
   .tag { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 10px; }
-  .feature h3 { font-size: clamp(26px, 3vw, 34px); line-height: 1.15; letter-spacing: -.02em; margin: 0 0 14px; }
+  .feature h3 { color: var(--fg); font-size: clamp(26px, 3vw, 34px); line-height: 1.15; letter-spacing: -.02em; margin: 0 0 14px; }
   .feature p { color: var(--muted); margin: 0 0 18px; }
   .feature ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
   .feature li { padding-left: 28px; position: relative; }
@@ -162,7 +162,7 @@
       <p>A month with Smart Budget, from payday to the last grocery run.</p>
     </div>
     <div class="film" id="filmBox">
-      <video id="filmVideo" src="media/smart-budget-intro.mp4" poster="media/intro-poster.jpg" preload="none" playsinline controls></video>
+      <video id="filmVideo" src="media/smart-budget-intro.mp4" poster="media/intro-poster.jpg" preload="none" playsinline></video>
       <button class="play" id="filmPlay" aria-label="Play the Smart Budget intro film">
         <span><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>
         <small>Smart Budget · 1:52</small>
@@ -299,7 +299,7 @@
     box.classList.add('playing');
     video.play();
   });
-  video.addEventListener('play', () => box.classList.add('playing'));
+  video.addEventListener('play', () => { box.classList.add('playing'); video.controls = true; });
 </script>
 </body>
 </html>
