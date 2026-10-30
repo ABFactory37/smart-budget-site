@@ -1,9 +1,10 @@
-:root { --fg: #E9EDF2; --bg: #0A0D12; --muted: #9AA4B2; --link: #3EE0A2; --line: #232A33; }
+:root { --fg: #E9EDF2; --bg: #0A0D12; --muted: #9AA4B2; --link: #3EE0A2; --line: #232A33; --code-bg: #171C23; color-scheme: dark; }
+:root[data-theme="light"] { --fg: #12161B; --bg: #F5F7FA; --muted: #55606E; --link: #08704C; --line: #DCE1E8; --code-bg: #E8ECF1; color-scheme: light; }
 body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.7 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
 main { max-width: 720px; margin: 0 auto; padding: 32px 20px 64px; }
 h1 { font-size: 2.2rem; letter-spacing: -.02em; margin: 16px 0 8px; }
 h2 { font-size: 1.2rem; margin-top: 2em; padding-top: 1.2em; border-top: 1px solid var(--line); }
 a { color: var(--link); }
-code { font-size: .9em; background: #171C23; padding: 1px 6px; border-radius: 6px; }
+code { font-size: .9em; background: var(--code-bg); padding: 1px 6px; border-radius: 6px; }
 .lead { font-size: 1.15rem; }
 .muted { color: var(--muted); }
